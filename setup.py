@@ -267,7 +267,11 @@ class MyBuild(build.build):
     def run(self):
         build_tvtk_classes_zip()
         build.build.run(self)
-        self.run_command('gen_docs')
+        try:
+            self.run_command('gen_docs')
+        except:
+            log.warn("Couldn't generate documentation:\n%s" %
+                     traceback.format_exception(*sys.exc_info()))
         try:
             self.run_command('build_docs')
         except:
@@ -433,6 +437,7 @@ if __name__ == '__main__':
             # setuptools' sdist command.
             'sdist': setuptools.command.sdist.sdist,
             'build': MyBuild,
+            'build_py': MyBuildPy,
             'clean': MyClean,
             'develop': MyDevelop,
             'install_data': MyInstallData,
